@@ -13,7 +13,6 @@
 #include "BloomFilter.h"
 
 
-
 BloomFilter::BloomFilter(int items_count, float fp_prob){
 
   /*
@@ -32,9 +31,16 @@ BloomFilter::BloomFilter(int items_count, float fp_prob){
   this->hash_count_ = this->calc_hash_count_(this->filter_size_,items_count);
   delay(100);
 
-  this->filter_ = (_Bool*) malloc(this->filter_size_ * sizeof(_Bool));
+  this->filter_.resize(this->filter_size_,false);
   delay(200);
 }
+
+BloomFilter::~BloomFilter(){
+  this->filter_.resize(0);
+  delete &(this->filter_);
+  delete this;
+}
+
 
 int BloomFilter::calc_hash_count_(int m, int n){
   /*

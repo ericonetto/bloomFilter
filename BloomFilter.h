@@ -8,11 +8,12 @@
 */
 #ifndef BloomFilter_h
 #define BloomFilter_h
-
+#include <vector>
 class BloomFilter
 {
   public:
     BloomFilter(int items_count, float fp_prob_);
+     ~BloomFilter();
     void addItem(char *strItem);
     _Bool checkItem(char *strItem);
     int getFilterSize();
@@ -21,7 +22,7 @@ class BloomFilter
   private:
     float fp_prob_;
     int filter_size_;
-    _Bool *filter_;
+    std::vector<bool> filter_;
     int hash_count_;
     int calc_hash_count_(int m, int n);
     int calc_size_(int n, float p);
