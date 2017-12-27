@@ -14,14 +14,14 @@ class BloomFilter
   public:
     BloomFilter(int items_count, float fp_prob_);
     void addItem(char *strItem);
-    bool checkItem(char *strItem);
+    _Bool checkItem(char *strItem);
     int getFilterSize();
     float getFalseProb();
     int getHashCount();
   private:
     float fp_prob_;
     int filter_size_;
-    bool *filter_;
+    _Bool *filter_;
     int hash_count_;
     int calc_hash_count_(int m, int n);
     int calc_size_(int n, float p);

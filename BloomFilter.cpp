@@ -27,22 +27,13 @@ BloomFilter::BloomFilter(int items_count, float fp_prob){
 
   // Size of bit array to use
   this->filter_size_ = this->calc_size_(items_count,fp_prob);
-
+  delay(100);
   // number of hash functions to use
   this->hash_count_ = this->calc_hash_count_(this->filter_size_,items_count);
+  delay(100);
 
-
-
-  // Bit array of given size
-  if (this->filter_ != 0) {
-      this->filter_ = (bool*) realloc(this->filter_, this->hash_count_ * sizeof(bool));
-  } else {
-      this->filter_ = (bool*) malloc(this->hash_count_ * sizeof(bool));
-  }
-
-  // initialize all bits as 0
-  memset(this->filter_, 0, sizeof(this->filter_));
-
+  this->filter_ = (_Bool*) malloc(this->filter_size_ * sizeof(_Bool));
+  delay(200);
 }
 
 int BloomFilter::calc_hash_count_(int m, int n){
@@ -74,15 +65,13 @@ int BloomFilter::calc_size_(int n, float p){
   return m;
 }
 
-bool BloomFilter::checkItem(char *strItem){
+_Bool BloomFilter::checkItem(char *strItem){
   /*
   Check for existence of an item in filter
   */
-  uint8_t item[strlen(strItem)];
-  memcpy(item,strItem,strlen(strItem));
 
   for (int i=0;i<=this->hash_count_;i++){
-    int digest = murmur3_32(item,32,i) % this->filter_size_;
+    int digest = murmur3_32((uint8_t*)strItem,strlen(strItem),i) % this->filter_size_;
     if (this->filter_[digest] == false){
 
       // if any of bit is false then,its not present
@@ -97,24 +86,14 @@ bool BloomFilter::checkItem(char *strItem){
 void BloomFilter::addItem(char *strItem){
 
  //Add an item in the filter
+ //Serial.println("addItem: " +(String)strItem);
 
- int *digests;
- for (int i=0;i<=this->hash_count_;i++){
-
-   // create digest for given item.
-   // i work as seed to mmh3.hash() function
-   // With different seed, digest created is different
+ for(int i=0;i<=this->hash_count_;i++){
+   int *digests;
    int digest=0;
-   char from;
-
-   uint8_t item[strlen(strItem)];
-   memcpy(item,strItem,strlen(strItem));
-
-   digest= murmur3_32(item,32,i) % this->filter_size_;
-
-   // set the bit true in filter
+   digest= murmur3_32((uint8_t*)strItem,strlen(strItem),i) % this->filter_size_;
    this->filter_[digest] = true;
- }
+  }
 
 }
 
