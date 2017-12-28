@@ -35,6 +35,32 @@ BloomFilter::BloomFilter(int items_count, float fp_prob){
   delay(200);
 }
 
+
+BloomFilter::BloomFilter(int items_count, std::vector<bool> &filter){
+
+  /*
+  items_count : int
+  Number of items expected to be stored in bloom filter
+  fp_prob : float
+  false Positive probability in decimal
+  */
+  // false posible probability in decimal
+    // Size of bit array to use
+  this->filter_size_ = filter.size();
+  delay(100);
+
+  this->fp_prob_ = calc_prob_(this->filter_size_,items_count);
+  // number of hash functions to use
+  this->hash_count_ = this->calc_hash_count_(this->filter_size_,items_count);
+  delay(100);
+
+  this->filter_=filter;
+  delay(200);
+}
+
+
+
+
 BloomFilter::~BloomFilter(){
   this->filter_.resize(0);
   delete &(this->filter_);
@@ -69,6 +95,19 @@ int BloomFilter::calc_size_(int n, float p){
   */
   int m = -(n * log(p))/pow(log(2),2);
   return m;
+}
+
+
+float BloomFilter::calc_prob_(int m, int n){
+  /*
+  m : int
+  size of bit array
+  n : int
+  number of items expected to be stored in filter
+  */
+
+  float p=pow(M_E,-(m*pow(log(2),2)/n));
+  return p;
 }
 
 _Bool BloomFilter::checkItem(char *strItem){
@@ -113,4 +152,9 @@ float BloomFilter::getFalseProb(){
 
 int BloomFilter::getHashCount(){
   return this->hash_count_;
+}
+
+
+std::vector<bool> BloomFilter::getFilter(){
+  return this->filter_;
 }
