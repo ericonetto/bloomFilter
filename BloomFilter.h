@@ -14,9 +14,9 @@ class BloomFilter
   public:
     BloomFilter(int items_count, float fp_prob_);
     BloomFilter(int items_count, std::vector<bool> &filter);
-     ~BloomFilter();
+    BloomFilter(int items_count, bool *filter, int sizeOfFilter);
     void addItem(char *strItem);
-    _Bool checkItem(char *strItem);
+    bool checkItem(char *strItem);
     int getFilterSize();
     float getFalseProb();
     int getHashCount();

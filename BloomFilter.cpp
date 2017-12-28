@@ -12,7 +12,6 @@
 #include "murmur32.h"
 #include "BloomFilter.h"
 
-
 BloomFilter::BloomFilter(int items_count, float fp_prob){
 
   /*
@@ -34,7 +33,6 @@ BloomFilter::BloomFilter(int items_count, float fp_prob){
   this->filter_.resize(this->filter_size_,false);
   delay(200);
 }
-
 
 BloomFilter::BloomFilter(int items_count, std::vector<bool> &filter){
 
@@ -58,15 +56,29 @@ BloomFilter::BloomFilter(int items_count, std::vector<bool> &filter){
   delay(200);
 }
 
+BloomFilter::BloomFilter(int items_count, bool *filter, int sizeOfFilter){
+
+  /*
+  items_count : int
+  Number of items expected to be stored in bloom filter
+  fp_prob : float
+  false Positive probability in decimal
+  */
+  // false posible probability in decimal
+    // Size of bit array to use
 
 
+  this->filter_size_ = sizeOfFilter;
+  delay(100);
 
-BloomFilter::~BloomFilter(){
-  this->filter_.resize(0);
-  delete &(this->filter_);
-  delete this;
+  this->fp_prob_ = calc_prob_(this->filter_size_,items_count);
+  // number of hash functions to use
+  this->hash_count_ = this->calc_hash_count_(this->filter_size_,items_count);
+  delay(100);
+
+  this->filter_.assign(filter, filter+this->filter_size_);
+  delay(200);
 }
-
 
 int BloomFilter::calc_hash_count_(int m, int n){
   /*
@@ -97,7 +109,6 @@ int BloomFilter::calc_size_(int n, float p){
   return m;
 }
 
-
 float BloomFilter::calc_prob_(int m, int n){
   /*
   m : int
@@ -110,7 +121,7 @@ float BloomFilter::calc_prob_(int m, int n){
   return p;
 }
 
-_Bool BloomFilter::checkItem(char *strItem){
+bool BloomFilter::checkItem(char *strItem){
   /*
   Check for existence of an item in filter
   */
@@ -153,7 +164,6 @@ float BloomFilter::getFalseProb(){
 int BloomFilter::getHashCount(){
   return this->hash_count_;
 }
-
 
 std::vector<bool> BloomFilter::getFilter(){
   return this->filter_;
